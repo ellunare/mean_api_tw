@@ -1,81 +1,149 @@
 const express = require('express');
 const router = express.Router();
+const config = require('../config/database')
+
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const config = require('../config/database')
+
+const PROTECT = passport.authenticate('jwt', { session: false });
+
+
+// // // // // // // // // // // // // // // // // // // // // //
 
 const User = require('../models/user');
 
-// Register
-router.post('/register', (req, res, next) => {
-	let newUser = new User({
-		name: req.body.name,
-		email: req.body.email,
-		username: req.body.username,
-		password: req.body.password
-	});
+// User By ID
+router.get('/user/:id', PROTECT, (req, res, next) => {
+	let id = req.params.id;
 
-	User.addUser(newUser, (err, user) => {
-		if (err) {
-			res.json({ success: false, msg: 'Failed to register new user' });
-		}
-		else {
-			res.json({ success: true, msg: 'User registered' });
-		}
-	});
-});
-
-// Authenticate
-router.post('/authenticate', (req, res, next) => {
-	const username = req.body.username;
-	const password = req.body.password;
-
-	User.getUserByUsername(username, (err, user) => {
+	User.getUserById(id, (err, user) => {
 		if (err) {
 			throw err;
 		}
 		if (!user) {
-			return res.json({ success: false, msg: 'User not found' });
+			res.json({
+				success: false,
+				msg: 'USES User not found',
+				data: null
+			});
 		}
-
-		User.comparePassword(password, user.password, (err, isMatch) => {
-			if (err) {
-				throw err;
-			}
-			if (isMatch) {
-				// user.toObject() || { data: user }
-				const token = jwt.sign({ data: user }, config.secret, {
-					expiresIn: 604800 // 1week
-				});
-
-				res.json({
-					success: true,
-					token: 'JWT ' + token,
-					user: {
-						id: user._id,
-						name: user.name,
-						username: user.username,
-						email: user.email
-					}
-				});
-			}
-			else {
-				return res.json({ success: false, msg: 'Wrong password' });
-			}
-		});
+		else {
+			res.json({
+				success: true,
+				msg: 'USES User ' + user.email + ' info',
+				data: user
+			});
+		}
 	});
 });
 
-// Profile
-//    если хотим защитить токеном маршрут, то вторым аргументом передаем
-//    passport.authenticate('jwt', { session: false })
-router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res, next) => {
-	res.json({ user: req.user });
+
+// Users By TeamId
+router.get('/team_users/:id', PROTECT, (req, res, next) => {
+	let id = req.params.id;
+
+	User.getTeamUsers(id, (err, teamUsers) => {
+		if (err) {
+			throw err;
+		}
+		if (!teamUsers) {
+			res.json({
+				success: false,
+				msg: 'USES Users not found',
+				data: null
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'USES Users for team' + id,
+				data: teamUsers
+			});
+		}
+	});
 });
 
-// // Validate
-// router.get('/validate', (req, res, next) => {
-// 	res.send('VALIDATE');
-// });
+
+// Delete User From Team
+router.put('/delete_from_team', PROTECT, (req, res, next) => {
+	let user_id = req.body.user_id;
+	let team_id = req.body.team_id;
+
+	User.deleteFromTeam(user_id, team_id, (err, result) => {
+		if (err) {
+			throw err;
+		}
+		if (!result) {
+			res.json({
+				success: false,
+				msg: 'USES User not found',
+				data: null
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'USES User ' + user_id + ' deleted from team' + team_id,
+				data: result
+			});
+		}
+	});
+});
+
+
+// Add User To Team
+router.put('/add_to_team', PROTECT, (req, res, next) => {
+	let email = req.body.email;
+	let team_id = req.body.team_id;
+
+	// Есть ли такой пользователь
+	User.getUserByEmail(email, (err, user) => {
+		if (err) {
+			throw err;
+		}
+		if (!user) {
+			res.json({
+				success: false,
+				msg: 'USES User ' + email + ' not found',
+				data: null
+			});
+		}
+		else {
+			// Он уже в текущей команде?
+			let len = user.parentTeamId.length;
+			for (let i = 0; i < len; i++) {
+				if (user.parentTeamId[i] == team_id) {
+					return res.json({
+						success: false,
+						msg: 'USES User ' + user.email + ' already in team' + team_id,
+						data: null
+					});
+				}
+			}
+
+			// Добавляем пользователя
+			User.addUserToTeam(email, team_id, (err, result) => {
+				if (err) {
+					throw err;
+				}
+				if (!result) {
+					res.json({
+						success: false,
+						msg: 'USES User ' + email + ' not added to team ' + team_id,
+						data: null
+					});
+				}
+				else {
+					res.json({
+						success: true,
+						msg: 'USES User ' + email + ' added to team' + team_id,
+						data: result
+					});
+				}
+			});
+		}
+	});
+});
+
 
 module.exports = router;

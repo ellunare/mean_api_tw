@@ -23,7 +23,12 @@ mongoose.connection.on('error', (err) => {
 
 const app = express();
 
+const auth = require('./routes/auth');
 const users = require('./routes/users');
+const teams = require('./routes/teams');
+const projects = require('./routes/projects');
+
+
 
 // Port Number
 const port = 3000;
@@ -45,23 +50,22 @@ app.use(passport.session());
 require('./config/passport')(passport);
 
 
-app.use('/users', users);
+app.use('/api/auth', auth);
+app.use('/api/users', users);
+app.use('/api/teams', teams);
+app.use('/api/projects', projects);
+
+
+// Index Route
+app.get('/', (req, res) => {
+	res.send('Invalid Endpoint');
+});
+
+app.get('*', (req, res) => {
+	res.sendFile(__dirname, 'public/index.html');
+});
 
 // Start Server
 app.listen(port, () => {
 	console.log('Server started on port ' + port);
 });
-
-
-
-// const index = require('./routes/index');
-// const tasks = require('./routes/tasks');
-
-// View Engine
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
-// app.engine('html', require('ejs').renderFile);
-
-
-// app.use('/', index);
-// app.use('/api', tasks);
