@@ -40,8 +40,7 @@ router.get('/projects/:id', PROTECT, (req, res, next) => {
 
 
 // Get Project By Id
-// , PROTECT
-router.get('/project/:id', (req, res, next) => {
+router.get('/project/:id', PROTECT, (req, res, next) => {
 	let id = req.params.id;
 
 	Project.getProjectById(id, (err, project) => {
@@ -111,28 +110,79 @@ router.post('/project_add', PROTECT, (req, res, next) => {
 });
 
 
-// // Delete Team By Id
-// router.delete('/team/:id', PROTECT, (req, res, next) => {
-// 	let id = req.params.id;
+// Edit Project By Id
+router.put('/edit/:id', PROTECT, (req, res, next) => {
+	let data = req.body;
 
-// 	Team.deleteTeam(id, (err, response) => {
-// 		if (err) {
-// 			throw err;
-// 		}
-// 		if (!response) {
-// 			res.json({
-// 				success: false,
-// 				msg: 'TEAS Team not found'
-// 			});
-// 		}
-// 		else {
-// 			res.json({
-// 				success: true,
-// 				msg: 'TEAS Team ' + id + ' deleted'
-// 			});
-// 		}
-// 	});
-// });
+	Project.editProject(data, (err, response) => {
+		if (err) {
+			throw err;
+		}
+		if (!response) {
+			res.json({
+				success: false,
+				msg: 'PROS Project not found'
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'PROS Project ' + data.id + ' edit'
+			});
+		}
+	});
+});
+
+
+// Delete Project By Id
+router.delete('/delete/:id', PROTECT, (req, res, next) => {
+	let id = req.params.id;
+
+	Project.deleteProject(id, (err, response) => {
+		if (err) {
+			throw err;
+		}
+		if (!response) {
+			res.json({
+				success: false,
+				msg: 'PROS Project not found'
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'PROS Project ' + id + ' deleted'
+			});
+		}
+	});
+});
+
+
+// Add/Remove Project FAV By Id
+router.put('/makefav', PROTECT, (req, res, next) => {
+	let data = req.body;
+
+	Project.favProject(data, (err, response) => {
+		if (err) {
+			throw err;
+		}
+		if (!response) {
+			res.json({
+				success: false,
+				msg: 'PROS Project not found',
+				data: null
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'PROS Project ' + data.p_id + ' fav changed',
+				data: data.add
+			});
+		}
+	});
+
+});
 
 
 module.exports = router;

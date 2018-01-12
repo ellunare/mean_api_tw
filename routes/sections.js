@@ -125,15 +125,12 @@ router.post('/sections_init', PROTECT, (req, res, next) => {
 
 	);
 
-
 });
 
 
 // Delete Sections By Parent Id
-// , PROTECT
-router.delete('/sections/delete/:id', (req, res, next) => {
+router.delete('/delete/project/:id', PROTECT, (req, res, next) => {
 	let project_id = req.params.id;
-	console.log(project_id);
 
 	Section.deleteSectionsByParent(project_id, (err, response) => {
 		if (err) {
@@ -153,71 +150,6 @@ router.delete('/sections/delete/:id', (req, res, next) => {
 		}
 	});
 });
-
-// // Add Project
-// router.post('/project_add', PROTECT, (req, res, next) => {
-
-// 	Project.getLastProjectId((err, lastTeam) => {
-// 		if (err) {
-// 			console.log('TEAS Cant find last team');
-// 		}
-// 		else {
-// 			// Формируем новую команду
-// 			let p = req.body;
-
-// 			let newProject = new Project({
-// 				id: lastTeam.id + 1,
-// 				name: p.name,
-// 				description: p.description,
-// 				color: p.color,
-// 				parentTeamId: p.parentTeamId,
-// 				userFavId: []
-// 			});
-
-// 			Project.addProject(newProject, (err, new_project) => {
-// 				if (err) {
-// 					res.json({
-// 						success: false,
-// 						msg: 'PROS Project creation error',
-// 						data: null
-// 					});
-// 				}
-// 				else {
-// 					res.status(201).json({
-// 						success: true,
-// 						msg: 'PROS Project ' + new_project.name + ' added',
-// 						data: new_project
-// 					});
-// 				}
-// 			});
-// 		}
-// 	});
-
-// });
-
-
-// // Delete Team By Id
-// router.delete('/team/:id', PROTECT, (req, res, next) => {
-// 	let id = req.params.id;
-
-// 	Team.deleteTeam(id, (err, response) => {
-// 		if (err) {
-// 			throw err;
-// 		}
-// 		if (!response) {
-// 			res.json({
-// 				success: false,
-// 				msg: 'TEAS Team not found'
-// 			});
-// 		}
-// 		else {
-// 			res.json({
-// 				success: true,
-// 				msg: 'TEAS Team ' + id + ' deleted'
-// 			});
-// 		}
-// 	});
-// });
 
 
 module.exports = router;

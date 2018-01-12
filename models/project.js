@@ -46,14 +46,42 @@ module.exports.getProjectsForTeam = function (team_id, cb) {
 	Project.find(query).exec(cb);
 }
 
+// Поиск проекта по ID
+module.exports.getProjectById = function (project_id, cb) {
+	const query = { id: project_id };
+	Project.findOne(query, cb);
+}
+
+// Редактирование проекта по ID
+module.exports.editProject = function (data, cb) {
+	const query = { id: data.id };
+	const update = {
+		$set: {
+			"name": data.name,
+			"description": data.description,
+			"color": data.color
+		}
+	};
+	Project.updateOne(query, update, cb);
+}
+
 // Удаление проекта по ID
 module.exports.deleteProject = function (id, cb) {
 	const query = { id: id };
 	Project.remove(query, cb);
 }
 
-// Поиск проекта по ID
-module.exports.getProjectById = function (project_id, cb) {
-	const query = { id: project_id };
-	Project.findOne(query, cb);
+// Добавляем проект в избранное по ID проекта и пользователя
+module.exports.favProject = function (data, cb) {
+	const query = { id: data.p_id };
+	let set = {};
+
+	if (data.add) {
+		set = { $push: { userFavId: data.u_id } };
+	}
+	else {
+		set = { $pull: { userFavId: data.u_id } };
+	}
+
+	Project.findOneAndUpdate(query, set, cb);
 }

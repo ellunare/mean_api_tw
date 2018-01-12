@@ -84,8 +84,8 @@ module.exports.getTeamUsers = function (team_id, cb) {
 
 // Удаляем пользователя из команды по его Id
 module.exports.deleteFromTeam = function (user_id, team_id, cb) {
-	const query = { id: user_id, parentTeamId: team_id };
-	const set = { $set: { "parentTeamId.$": 0 } };
+	const query = { id: user_id };
+	const set = { $pull: { parentTeamId: team_id } };
 	User.findOneAndUpdate(query, set, cb);
 }
 
