@@ -7,6 +7,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
 
+mongoose.Promise = global.Promise;
 // Connect To Database
 mongoose.connect(config.database, { useMongoClient: true });
 
@@ -27,6 +28,7 @@ const auth = require('./routes/auth');
 const users = require('./routes/users');
 const teams = require('./routes/teams');
 const projects = require('./routes/projects');
+const sections = require('./routes/sections');
 
 
 
@@ -54,6 +56,7 @@ app.use('/api/auth', auth);
 app.use('/api/users', users);
 app.use('/api/teams', teams);
 app.use('/api/projects', projects);
+app.use('/api/sections', sections);
 
 
 // Index Route

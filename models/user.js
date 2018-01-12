@@ -79,7 +79,7 @@ module.exports.getUserById = function (id, cb) {
 // Отдаем пользоваетелей принадлежащих команде с Parent ID пользователя
 module.exports.getTeamUsers = function (team_id, cb) {
 	const query = { parentTeamId: team_id };
-	User.find(query, cb);
+	User.find(query).exec(cb);
 }
 
 // Удаляем пользователя из команды по его Id

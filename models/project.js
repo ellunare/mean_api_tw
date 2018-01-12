@@ -30,30 +30,30 @@ const Project = module.exports = mongoose.model('Project', ProjectSchema, collec
 
 // ----------------------------------------------------------------------
 
-// // Получаем последнее ID
-// module.exports.getLastTeamId = function (cb) {
-// 	Team.findOne({}, {}, { sort: { 'id': -1 } }, cb);
-// }
+// Получаем последнее ID
+module.exports.getLastProjectId = function (cb) {
+	Project.findOne({}, {}, { sort: { 'id': -1 } }, cb);
+}
 
-// // Поиск команды по названию
-// module.exports.getTeamByName = function (name, cb) {
-// 	const query = { name: name };
-// 	Team.findOne(query, cb);
-// }
-
-// // Добавляем команду
-// module.exports.addTeam = function (newTeam, cb) {
-// 	newTeam.save(cb);
-// }
+// Добавляем проект
+module.exports.addProject = function (newProject, cb) {
+	newProject.save(cb);
+}
 
 // Получаем все проекты для команды
 module.exports.getProjectsForTeam = function (team_id, cb) {
 	const query = { parentTeamId: team_id };
-	Project.find(query, cb);
+	Project.find(query).exec(cb);
 }
 
-// // Удаление команды по ID
-// module.exports.deleteTeam = function (id, cb) {
-// 	const query = { id: id };
-// 	Team.remove(query, cb);
-// }
+// Удаление проекта по ID
+module.exports.deleteProject = function (id, cb) {
+	const query = { id: id };
+	Project.remove(query, cb);
+}
+
+// Поиск проекта по ID
+module.exports.getProjectById = function (project_id, cb) {
+	const query = { id: project_id };
+	Project.findOne(query, cb);
+}
