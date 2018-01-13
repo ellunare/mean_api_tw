@@ -7,8 +7,8 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
 
-mongoose.Promise = global.Promise;
 // Connect To Database
+mongoose.Promise = global.Promise;
 mongoose.connect(config.database, { useMongoClient: true });
 
 // On Connection
@@ -29,7 +29,9 @@ const users = require('./routes/users');
 const teams = require('./routes/teams');
 const projects = require('./routes/projects');
 const sections = require('./routes/sections');
-
+const desks = require('./routes/desks');
+const tasks = require('./routes/tasks');
+const comments = require('./routes/comments');
 
 
 // Port Number
@@ -39,12 +41,11 @@ const port = 3000;
 app.use(cors());
 
 // Set Static Folder
-// public - folder
+// public folder for Angular App
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Body Parser MW
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: false }));
 
 // Passport MW
 app.use(passport.initialize());
@@ -57,6 +58,9 @@ app.use('/api/users', users);
 app.use('/api/teams', teams);
 app.use('/api/projects', projects);
 app.use('/api/sections', sections);
+app.use('/api/desks', desks);
+app.use('/api/tasks', tasks);
+app.use('/api/comments', comments);
 
 
 // Index Route

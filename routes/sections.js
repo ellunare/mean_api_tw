@@ -3,7 +3,6 @@ const router = express.Router();
 const config = require('../config/database')
 
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
 
 const PROTECT = passport.authenticate('jwt', { session: false });
 
@@ -11,7 +10,76 @@ const PROTECT = passport.authenticate('jwt', { session: false });
 
 const Section = require('../models/section');
 
-router.get('/sections/project/:id', PROTECT, (req, res, next) => {
+
+// Отдаем 1 секцию по id
+router.get('/one/:id', PROTECT, (req, res, next) => {
+	let id = req.params.id;
+
+	Section.getSection(id, (err, section) => {
+		if (err) {
+			throw err;
+		}
+		if (!section) {
+			res.json({
+				success: false,
+				msg: 'SECS Section not found',
+				data: null
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'SECS Section send',
+				data: section
+			});
+		}
+	});
+});
+
+
+// Создаем секцию
+router.post('/create', PROTECT, (req, res, next) => {
+
+	Section.getLastSectionId((err, lastSection) => {
+		if (err) {
+			console.log('SECS Cant find last section');
+		}
+		else {
+			// Формируем новую команду
+			let s = req.body;
+
+			let newSection = new Section({
+				id: lastSection.id + 1,
+				name: s.name,
+				description: s.description,
+				parentProjectId: s.parentProjectId
+			});
+
+			Section.addSection(newSection, (err, response) => {
+				if (err) {
+					res.json({
+						success: false,
+						msg: 'SECS Section creation error',
+						data: null
+					});
+				}
+				else {
+					res.status(201).json({
+						success: true,
+						msg: 'PROS Section ' + response.name + ' added',
+						data: response
+					});
+				}
+			});
+
+		}
+	});
+
+});
+
+
+// Отдаем секции для проекта
+router.get('/project/:id', PROTECT, (req, res, next) => {
 	let project_id = req.params.id;
 
 	Section.getSectionsForProject(project_id, (err, sections) => {
@@ -19,7 +87,7 @@ router.get('/sections/project/:id', PROTECT, (req, res, next) => {
 			throw err;
 		}
 		if (!sections.length) {
-			return res.json({
+			res.json({
 				success: false,
 				msg: 'SECS Sections not found',
 				data: null
@@ -125,6 +193,56 @@ router.post('/sections_init', PROTECT, (req, res, next) => {
 
 	);
 
+});
+
+
+// Редактируем секцию
+router.put('/edit', PROTECT, (req, res, next) => {
+	let data = req.body;
+
+	Section.editSection(data, (err, result) => {
+		if (err) {
+			throw err;
+		}
+		if (!result) {
+			res.json({
+				success: false,
+				msg: 'SECS Section not found',
+				data: null
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'SECS Section edit saved',
+				data: result
+			});
+		}
+	});
+});
+
+
+// Delete Section By Id
+router.delete('/delete/:id', PROTECT, (req, res, next) => {
+	let id = req.params.id;
+
+	Section.deleteSectionById(id, (err, response) => {
+		if (err) {
+			throw err;
+		}
+		if (!response.result.n) {
+			res.json({
+				success: false,
+				msg: 'SECS Section not found'
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'SECS Section ' + id + ' deleted'
+			});
+		}
+	});
 });
 
 

@@ -29,20 +29,27 @@ module.exports.getLastSectionId = function (cb) {
 	Section.findOne({}, {}, { sort: { 'id': -1 } }).exec(cb);
 }
 
+// Поиск 1 секции по ID
+module.exports.getSection = function (id, cb) {
+	const query = { id: id };
+	Section.findOne(query, cb);
+}
+
 // Добавляем секцию
 module.exports.addSection = function (newSection, cb) {
 	newSection.save(cb);
 }
 
-// // Инициализируем 3мя секциями проект
-// module.exports.initialize = function (newSections, cb) {
-// 	Section.insertMany(newSections).exec(cb);
-// }
-
 // Получаем все секции для проекта
 module.exports.getSectionsForProject = function (project_id, cb) {
 	const query = { parentProjectId: project_id };
 	Section.find(query, cb);
+}
+
+// Удаление секции по ID
+module.exports.deleteSectionById = function (id, cb) {
+	const query = { id: id };
+	Section.remove(query, cb);
 }
 
 // Удаление секциий по ID родителя
@@ -51,17 +58,18 @@ module.exports.deleteSectionsByParent = function (project_id, cb) {
 	Section.remove(query, cb);
 }
 
-// // Удаление проекта по ID
-// module.exports.deleteProject = function (id, cb) {
-// 	const query = { id: id };
-// 	Project.remove(query, cb);
-// }
+// Редактирование секции по ID
+module.exports.editSection = function (data, cb) {
+	const query = { id: data.id };
+	const update = {
+		$set: {
+			"name": data.name,
+			"description": data.description,
+		}
+	};
+	Section.updateOne(query, update, cb);
+}
 
-// // Поиск команды по названию
-// module.exports.getTeamByName = function (name, cb) {
-// 	const query = { name: name };
-// 	Team.findOne(query, cb);
-// }
 
 module.exports.DEF_sections = [
 	{

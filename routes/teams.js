@@ -3,10 +3,8 @@ const router = express.Router();
 const config = require('../config/database')
 
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
 
 const PROTECT = passport.authenticate('jwt', { session: false });
-
 
 // // // // // // // // // // // // // // // // // // // // // //
 
