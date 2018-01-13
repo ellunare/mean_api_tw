@@ -37,121 +37,119 @@ router.get('/desk/:id', PROTECT, (req, res, next) => {
 });
 
 
-// // Get Desk By Id
-// router.get('/desk/:id', PROTECT, (req, res, next) => {
-// 	let id = req.params.id;
+// Get Task By Id
+router.get('/task/:id', PROTECT, (req, res, next) => {
+	let id = req.params.id;
 
-// 	Desk.getDeskById(id, (err, desk) => {
-// 		if (err) {
-// 			throw err;
-// 		}
-// 		if (!desk) {
+	Task.getTaskById(id, (err, task) => {
+		if (err) {
+			throw err;
+		}
+		if (!task) {
+			res.json({
+				success: false,
+				msg: 'TASS Task not found',
+				data: null
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'TASS Task ' + id + ' send',
+				data: task
+			});
+		}
+	});
 
-// 			return res.json({
-// 				success: false,
-// 				msg: 'DESS Desk not found',
-// 				data: null
-// 			});
-// 		}
-// 		else {
-// 			res.json({
-// 				success: true,
-// 				msg: 'DESS Desk ' + id + ' send',
-// 				data: desk
-// 			});
-// 		}
-// 	});
-
-// });
-
-
-// // Add Desk
-// router.post('/create', PROTECT, (req, res, next) => {
-
-// 	Desk.getLastDeskId((err, lastDesk) => {
-// 		if (err) {
-// 			console.log('DESS Cant find last desk');
-// 		}
-// 		else {
-// 			// Формируем новую команду
-// 			let d = req.body;
-
-// 			let newDesk = new Desk({
-// 				id: lastDesk.id + 1,
-// 				line: d.line,
-// 				parentSectionId: d.parentSectionId
-// 			});
-
-// 			Desk.addDesk(newDesk, (err, new_desk) => {
-// 				if (err) {
-// 					res.json({
-// 						success: false,
-// 						msg: 'DESS Desk creation error',
-// 						data: null
-// 					});
-// 				}
-// 				else {
-// 					res.status(201).json({
-// 						success: true,
-// 						msg: 'DESS Desk ' + new_desk.id + ' added',
-// 						data: new_desk
-// 					});
-// 				}
-// 			});
-
-// 		}
-// 	});
-
-// });
+});
 
 
-// // Edit Desk By Id
-// router.put('/edit', PROTECT, (req, res, next) => {
-// 	let data = req.body;
+// Add Task
+router.post('/create', PROTECT, (req, res, next) => {
 
-// 	Desk.editDesk(data, (err, result) => {
-// 		console.log(result);
-// 		if (err) {
-// 			throw err;
-// 		}
-// 		if (!result.n) {
-// 			res.json({
-// 				success: false,
-// 				msg: 'DESS Desk not found'
-// 			});
-// 		}
-// 		else {
-// 			res.json({
-// 				success: true,
-// 				msg: 'DESS Desk ' + data.id + ' edit'
-// 			});
-// 		}
-// 	});
-// });
+	Task.getLastTaskId((err, lastTask) => {
+		if (err) {
+			console.log('TASS Cant find last task');
+		}
+		else {
+			// Формируем новый таск
+			let t = req.body;
+
+			let newTask = new Task({
+				id: lastTask.id + 1,
+				line: t.line,
+				parentDeskId: t.parentDeskId
+			});
+
+			Task.addTask(newTask, (err, new_task) => {
+				if (err) {
+					res.json({
+						success: false,
+						msg: 'TASS Task creation error',
+						data: null
+					});
+				}
+				else {
+					res.status(201).json({
+						success: true,
+						msg: 'TASS Task ' + new_task.id + ' added',
+						data: new_task
+					});
+				}
+			});
+
+		}
+	});
+
+});
 
 
-// // Delete Desk By Id
-// router.delete('/delete/:id', PROTECT, (req, res, next) => {
-// 	let id = req.params.id;
+// Edit Task By Id
+router.put('/edit', PROTECT, (req, res, next) => {
+	let data = req.body;
 
-// 	Desk.deleteDesk(id, (err, result) => {
-// 		if (err) {
-// 			throw err;
-// 		}
-// 		if (!result.result.n) {
-// 			res.json({
-// 				success: false,
-// 				msg: 'DESS Desk not found'
-// 			});
-// 		}
-// 		else {
-// 			res.json({
-// 				success: true,
-// 				msg: 'DESS Desk ' + id + ' deleted'
-// 			});
-// 		}
-// 	});
-// });
+	Task.editTask(data, (err, result) => {
+		if (err) {
+			throw err;
+		}
+		if (!result.n) {
+			res.json({
+				success: false,
+				msg: 'TASS Task not found'
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'TASS Task ' + data.id + ' edit'
+			});
+		}
+	});
+});
+
+
+// Delete Task By Id
+router.delete('/delete/:id', PROTECT, (req, res, next) => {
+	let id = req.params.id;
+
+	Task.deleteTask(id, (err, result) => {
+		if (err) {
+			throw err;
+		}
+		if (!result.result.n) {
+			res.json({
+				success: false,
+				msg: 'TASS Task not found'
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'TASS Task ' + id + ' deleted'
+			});
+		}
+	});
+});
 
 
 module.exports = router;

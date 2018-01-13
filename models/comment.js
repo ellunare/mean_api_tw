@@ -24,15 +24,15 @@ const Comment = module.exports = mongoose.model('Comment', CommentSchema, collec
 
 // ----------------------------------------------------------------------
 
-// // Получаем последнее ID
-// module.exports.getLastDeskId = function (cb) {
-// 	Desk.findOne({}, {}, { sort: { 'id': -1 } }, cb);
-// }
+// Получаем последнее ID
+module.exports.getLastCommentId = function (cb) {
+	Comment.findOne({}, {}, { sort: { 'id': -1 } }, cb);
+}
 
-// // Добавляем проект
-// module.exports.addDesk = function (newDesk, cb) {
-// 	newDesk.save(cb);
-// }
+// Добавляем комментарий
+module.exports.addComment = function (newComment, cb) {
+	newComment.save(cb);
+}
 
 // Получаем все комменты для таска
 module.exports.getCommentsForTask = function (task_id, cb) {
@@ -40,25 +40,25 @@ module.exports.getCommentsForTask = function (task_id, cb) {
 	Comment.find(query).exec(cb);
 }
 
-// // Поиск проекта по ID
-// module.exports.getDeskById = function (id, cb) {
-// 	const query = { id: id };
-// 	Desk.findOne(query, cb);
-// }
+// Поиск коммента по ID
+module.exports.getCommentById = function (id, cb) {
+	const query = { id: id };
+	Comment.findOne(query, cb);
+}
 
-// // Редактирование доски по ID
-// module.exports.editDesk = function (data, cb) {
-// 	const query = { id: data.id };
-// 	const update = {
-// 		$set: {
-// 			"line": data.line
-// 		}
-// 	};
-// 	Desk.updateOne(query, update, cb);
-// }
+// Редактирование коммента по ID
+module.exports.editComment = function (data, cb) {
+	const query = { id: data.id };
+	const update = {
+		$set: {
+			"text": data.text
+		}
+	};
+	Comment.updateOne(query, update, cb);
+}
 
-// // Удаление доски по ID
-// module.exports.deleteDesk = function (id, cb) {
-// 	const query = { id: id };
-// 	Desk.remove(query, cb);
-// }
+// Удаление коммента по ID
+module.exports.deleteComment = function (id, cb) {
+	const query = { id: id };
+	Comment.remove(query, cb);
+}

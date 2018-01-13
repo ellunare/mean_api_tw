@@ -73,7 +73,7 @@ router.post('/create', PROTECT, (req, res, next) => {
 			console.log('DESS Cant find last desk');
 		}
 		else {
-			// Формируем новую команду
+			// Формируем новую доску
 			let d = req.body;
 
 			let newDesk = new Desk({
@@ -110,7 +110,6 @@ router.put('/edit', PROTECT, (req, res, next) => {
 	let data = req.body;
 
 	Desk.editDesk(data, (err, result) => {
-		console.log(result);
 		if (err) {
 			throw err;
 		}

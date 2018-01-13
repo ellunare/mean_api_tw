@@ -37,121 +37,119 @@ router.get('/task/:id', PROTECT, (req, res, next) => {
 });
 
 
-// // Get Desk By Id
-// router.get('/desk/:id', PROTECT, (req, res, next) => {
-// 	let id = req.params.id;
+// Get Comment By Id
+router.get('/comment/:id', PROTECT, (req, res, next) => {
+	let id = req.params.id;
 
-// 	Desk.getDeskById(id, (err, desk) => {
-// 		if (err) {
-// 			throw err;
-// 		}
-// 		if (!desk) {
-
-// 			return res.json({
-// 				success: false,
-// 				msg: 'DESS Desk not found',
-// 				data: null
-// 			});
-// 		}
-// 		else {
-// 			res.json({
-// 				success: true,
-// 				msg: 'DESS Desk ' + id + ' send',
-// 				data: desk
-// 			});
-// 		}
-// 	});
-
-// });
+	Comment.getCommentById(id, (err, comment) => {
+		if (err) {
+			throw err;
+		}
+		if (!comment) {
+			res.json({
+				success: false,
+				msg: 'COMS Comment not found',
+				data: null
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'COMS Comment ' + id + ' send',
+				data: comment
+			});
+		}
+	});
+});
 
 
-// // Add Desk
-// router.post('/create', PROTECT, (req, res, next) => {
+// Add Comment
+router.post('/create', PROTECT, (req, res, next) => {
 
-// 	Desk.getLastDeskId((err, lastDesk) => {
-// 		if (err) {
-// 			console.log('DESS Cant find last desk');
-// 		}
-// 		else {
-// 			// Формируем новую команду
-// 			let d = req.body;
+	Comment.getLastCommentId((err, lastComment) => {
+		if (err) {
+			console.log('COMS Cant find last comment');
+		}
+		else {
+			// Формируем новый коммент
+			let c = req.body;
 
-// 			let newDesk = new Desk({
-// 				id: lastDesk.id + 1,
-// 				line: d.line,
-// 				parentSectionId: d.parentSectionId
-// 			});
+			let newComment = new Comment({
+				id: lastComment.id + 1,
+				text: c.text,
+				parentTaskId: c.parentTaskId,
+				parentUserId: c.parentUserId
+			});
 
-// 			Desk.addDesk(newDesk, (err, new_desk) => {
-// 				if (err) {
-// 					res.json({
-// 						success: false,
-// 						msg: 'DESS Desk creation error',
-// 						data: null
-// 					});
-// 				}
-// 				else {
-// 					res.status(201).json({
-// 						success: true,
-// 						msg: 'DESS Desk ' + new_desk.id + ' added',
-// 						data: new_desk
-// 					});
-// 				}
-// 			});
+			Comment.addComment(newComment, (err, new_comment) => {
+				if (err) {
+					res.json({
+						success: false,
+						msg: 'COMS Desk creation error',
+						data: null
+					});
+				}
+				else {
+					res.status(201).json({
+						success: true,
+						msg: 'COMS Desk ' + new_comment.id + ' added',
+						data: new_comment
+					});
+				}
+			});
 
-// 		}
-// 	});
+		}
+	});
 
-// });
-
-
-// // Edit Desk By Id
-// router.put('/edit', PROTECT, (req, res, next) => {
-// 	let data = req.body;
-
-// 	Desk.editDesk(data, (err, result) => {
-// 		console.log(result);
-// 		if (err) {
-// 			throw err;
-// 		}
-// 		if (!result.n) {
-// 			res.json({
-// 				success: false,
-// 				msg: 'DESS Desk not found'
-// 			});
-// 		}
-// 		else {
-// 			res.json({
-// 				success: true,
-// 				msg: 'DESS Desk ' + data.id + ' edit'
-// 			});
-// 		}
-// 	});
-// });
+});
 
 
-// // Delete Desk By Id
-// router.delete('/delete/:id', PROTECT, (req, res, next) => {
-// 	let id = req.params.id;
+// Edit Comment By Id
+router.put('/edit', PROTECT, (req, res, next) => {
+	let data = req.body;
 
-// 	Desk.deleteDesk(id, (err, result) => {
-// 		if (err) {
-// 			throw err;
-// 		}
-// 		if (!result.result.n) {
-// 			res.json({
-// 				success: false,
-// 				msg: 'DESS Desk not found'
-// 			});
-// 		}
-// 		else {
-// 			res.json({
-// 				success: true,
-// 				msg: 'DESS Desk ' + id + ' deleted'
-// 			});
-// 		}
-// 	});
-// });
+	Comment.editComment(data, (err, result) => {
+		if (err) {
+			throw err;
+		}
+		if (!result.n) {
+			res.json({
+				success: false,
+				msg: 'COMS Comment not found'
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'COMS Comment ' + data.id + ' edited'
+			});
+		}
+	});
+});
+
+
+// Delete Comment By Id
+router.delete('/delete/:id', PROTECT, (req, res, next) => {
+	let id = req.params.id;
+
+	Comment.deleteComment(id, (err, result) => {
+		if (err) {
+			throw err;
+		}
+		if (!result.result.n) {
+			res.json({
+				success: false,
+				msg: 'COMS Comment not found'
+			});
+		}
+		else {
+			res.json({
+				success: true,
+				msg: 'COMS Comment ' + id + ' deleted'
+			});
+		}
+	});
+});
 
 
 module.exports = router;

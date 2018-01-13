@@ -7,9 +7,6 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
-// const PROTECT = passport.authenticate('jwt', { session: false });
-
-
 // // // // // // // // // // // // // // // // // // // // // //
 
 
@@ -53,8 +50,6 @@ router.post('/register', (req, res, next) => {
 
 // Authenticate
 router.post('/authenticate', (req, res, next) => {
-	console.log('AUTH - body', req.body);
-	console.log('AUTH - headers', req.headers);
 
 	const email = req.body.email;
 	const password = req.body.password;

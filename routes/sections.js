@@ -45,7 +45,7 @@ router.post('/create', PROTECT, (req, res, next) => {
 			console.log('SECS Cant find last section');
 		}
 		else {
-			// Формируем новую команду
+			// Формируем новую секцию
 			let s = req.body;
 
 			let newSection = new Section({

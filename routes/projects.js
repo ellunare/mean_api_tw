@@ -73,7 +73,7 @@ router.post('/project_add', PROTECT, (req, res, next) => {
 			console.log('TEAS Cant find last team');
 		}
 		else {
-			// Формируем новую команду
+			// Формируем новый проект
 			let p = req.body;
 
 			let newProject = new Project({
