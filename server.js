@@ -70,7 +70,7 @@ app.use('/api/comments', comments);
 // 	res.send('Invalid Endpoint');
 // });
 
-app.all('*', (req, res) => {
+app.get('*', (req, res) => {
 	res.sendFile(__dirname, 'public/index.html');
 });
 
