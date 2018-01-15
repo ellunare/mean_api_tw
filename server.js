@@ -65,14 +65,13 @@ app.use('/api/tasks', tasks);
 app.use('/api/comments', comments);
 
 
-// Index Route
-app.get('/', (req, res) => {
-	res.send('Invalid Endpoint');
-});
+// // Index Route
+// app.get('/', (req, res) => {
+// 	res.send('Invalid Endpoint');
+// });
 
-app.get('*', (req, res) => {
-	// res.sendFile(__dirname, 'public/index.html');
-	app.use(express.static(path.join(__dirname, 'public')));
+app.get('/*', (req, res) => {
+	res.sendFile(__dirname, 'public/index.html');
 });
 
 // Start Server
