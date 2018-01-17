@@ -79,7 +79,7 @@ router.post('/team_add', PROTECT, (req, res, next) => {
 		else {
 			res.json({
 				success: false,
-				msg: 'TEAS Team already exists',
+				msg: 'Team already exists',
 				data: null
 			});
 		}

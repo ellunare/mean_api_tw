@@ -104,7 +104,7 @@ router.put('/add_to_team', PROTECT, (req, res, next) => {
 		if (!user) {
 			res.json({
 				success: false,
-				msg: 'USES User ' + email + ' not found',
+				msg: 'User ' + email + ' not found',
 				data: null
 			});
 		}
@@ -115,7 +115,7 @@ router.put('/add_to_team', PROTECT, (req, res, next) => {
 				if (user.parentTeamId[i] == team_id) {
 					return res.json({
 						success: false,
-						msg: 'USES User ' + user.email + ' already in team' + team_id,
+						msg: 'User ' + user.email + ' already in this team',
 						data: null
 					});
 				}
