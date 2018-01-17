@@ -13,39 +13,55 @@ const User = require('../models/user');
 // Register
 router.post('/register', (req, res, next) => {
 
-	User.getLastUserId((err, lastUser) => {
+	User.getUserByEmail(req.body.email, (err, res_user) => {
 		if (err) {
-			console.log('Cant find last user');
+			throw err;
+		}
+		if (res_user) {
+			if (res_user.email === req.body.email) {
+				return res.json({
+					success: false,
+					msg: 'User ' + req.body.email + ' already exists'
+				});
+			}
 		}
 		else {
-			let U = req.body;
-
-			let newUser = new User({
-				id: lastUser.id + 1,
-				name: U.name,
-				email: U.email,
-				password: U.password,
-				parentTeamId: [],
-				avatar: U.avatar
-			});
-
-			User.addUser(newUser, (err, user) => {
+			User.getLastUserId((err, lastUser) => {
 				if (err) {
-					res.json({
-						success: false,
-						msg: 'USES User registration error'
-					});
+					console.log('Cant find last user');
 				}
 				else {
-					res.status(201).json({
-						success: true,
-						msg: 'USES User ' + newUser.email + ' registered'
+					let U = req.body;
+
+					let newUser = new User({
+						id: lastUser.id + 1,
+						name: U.name,
+						email: U.email,
+						password: U.password,
+						parentTeamId: [],
+						avatar: U.avatar
+					});
+
+					User.addUser(newUser, (err, user) => {
+						if (err) {
+							res.json({
+								success: false,
+								msg: 'USES User registration error'
+							});
+						}
+						else {
+							res.status(201).json({
+								success: true,
+								msg: 'USES User ' + newUser.email + ' registered'
+							});
+						}
 					});
 				}
 			});
 		}
 	});
 });
+
 
 
 // Authenticate
@@ -61,38 +77,41 @@ router.post('/authenticate', (req, res, next) => {
 		if (!user) {
 			return res.json({
 				success: false,
-				msg: 'USES User ' + email + ' not found'
+				msg: 'User ' + email + ' not found'
+			});
+		}
+		else {
+
+			User.comparePassword(password, user.password, (err, isMatch) => {
+				if (err) {
+					throw err;
+				}
+				if (isMatch) {
+					// user.toObject() || { data: user }
+					const token = jwt.sign({ data: user }, config.secret, {
+						expiresIn: 604800 // 1week
+					});
+					return res.status(200).json({
+						success: true,
+						msg: 'USES User ' + email + ' authenticated',
+						token: 'JWT ' + token,
+						user: {
+							_id: user._id,
+							id: user.id,
+							name: user.name,
+							email: user.email,
+						}
+					});
+				}
+				else {
+					return res.json({
+						success: false,
+						msg: 'Wrong password for user ' + email
+					});
+				}
 			});
 		}
 
-		User.comparePassword(password, user.password, (err, isMatch) => {
-			if (err) {
-				throw err;
-			}
-			if (isMatch) {
-				// user.toObject() || { data: user }
-				const token = jwt.sign({ data: user }, config.secret, {
-					expiresIn: 604800 // 1week
-				});
-				return res.status(200).json({
-					success: true,
-					msg: 'USES User ' + email + ' authenticated',
-					token: 'JWT ' + token,
-					user: {
-						_id: user._id,
-						id: user.id,
-						name: user.name,
-						email: user.email,
-					}
-				});
-			}
-			else {
-				return res.json({
-					success: false,
-					msg: 'USES Wrong password for user ' + email
-				});
-			}
-		});
 	});
 });
 

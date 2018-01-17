@@ -16,9 +16,9 @@ router.get('/one/:id', PROTECT, (req, res, next) => {
 	let id = req.params.id;
 
 	Section.getSection(id, (err, section) => {
-		if (err) {
-			throw err;
-		}
+		// if (err) {
+		// 	throw err;
+		// }
 		if (!section) {
 			res.json({
 				success: false,
@@ -83,9 +83,9 @@ router.get('/project/:id', PROTECT, (req, res, next) => {
 	let project_id = req.params.id;
 
 	Section.getSectionsForProject(project_id, (err, sections) => {
-		if (err) {
-			throw err;
-		}
+		// if (err) {
+		// 	throw err;
+		// }
 		if (!sections.length) {
 			res.json({
 				success: false,

@@ -42,12 +42,11 @@ router.get('/project/:id', PROTECT, (req, res, next) => {
 	let id = req.params.id;
 
 	Project.getProjectById(id, (err, project) => {
-		if (err) {
-			throw err;
-		}
+		// if (err) {
+		// 	throw err;
+		// }
 		if (!project) {
-
-			return res.json({
+			res.json({
 				success: false,
 				msg: 'PROS Project not found',
 				data: null

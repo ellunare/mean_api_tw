@@ -37,7 +37,7 @@ const comments = require('./routes/comments');
 // Port Number
 // const port = 3000;
 // PROD //
-	const port = process.env.PORT || 8080
+const port = process.env.PORT || 8080
 
 // CORS MW
 app.use(cors());
